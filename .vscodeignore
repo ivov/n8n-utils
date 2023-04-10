@@ -1,0 +1,9 @@
+# files to exclude when packaging VSCode extension
+.vscode/**
+node_modules/**
+src/**
+.eslintignore
+.eslintrc.js
+.gitignore
+.prettierrc.js
+tsconfig.json

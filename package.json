@@ -1,0 +1,156 @@
+{
+  "name": "n8n-utils",
+  "displayName": "n8n utils",
+  "description": "Utilities for n8n development",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.72.0",
+    "node": ">=16.9"
+  },
+  "icon": "./media/n8n-logo-preview.png",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "n8n"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivov/n8n-utils.git"
+  },
+  "author": {
+    "name": "Iván Ovejero",
+    "url": "https://ivov.dev"
+  },
+  "publisher": "ivov",
+  "qna": false,
+  "main": "./dist/extension.js",
+  "pricing": "Free",
+  "scripts": {
+    "build": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --platform=node",
+    "watch": "npm run build -- --watch",
+    "vscode:prepublish": "npm run build -- --minify",
+    "lint": "eslint --ext .ts src",
+    "lintfix": "eslint --ext .ts src --fix",
+    "format": "prettier --write ."
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "n8n-utils.launch",
+        "title": "Launch n8n in VSCode",
+        "category": "n8n-utils"
+      },
+      {
+        "command": "n8n-utils.navigateToEndpoint",
+        "title": "Navigate to endpoint",
+        "category": "n8n-utils"
+      },
+      {
+        "command": "n8n-utils.navigateToParam",
+        "title": "Navigate to node parameter",
+        "category": "n8n-utils"
+      },
+      {
+        "command": "n8n-utils.refreshControllers",
+        "title": "Refresh",
+        "icon": {
+          "light": "./media/refresh-light.svg",
+          "dark": "./media/refresh-dark.svg"
+        }
+      },
+      {
+        "command": "n8n-utils.refreshParams",
+        "title": "Refresh",
+        "icon": {
+          "light": "./media/refresh-light.svg",
+          "dark": "./media/refresh-dark.svg"
+        }
+      }
+    ],
+    "configuration": {
+      "title": "n8n-utils",
+      "properties": {
+        "n8n-utils.launcher.port": {
+          "type": "number",
+          "default": 5678
+        },
+        "n8n-utils.nodeStats.token": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "n8n-utils-container",
+          "title": "n8n-utils",
+          "icon": "media/n8n-white.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "n8n-utils.refreshControllers",
+          "when": "view == n8n-endpoints-view",
+          "group": "navigation"
+        },
+        {
+          "command": "n8n-utils.refreshParams",
+          "when": "view == node-params-view",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "n8n-utils-container": [
+        {
+          "id": "node-params-view",
+          "name": "Node params"
+        },
+        {
+          "id": "n8n-endpoints-view",
+          "name": "n8n endpoints"
+        },
+        {
+          "id": "stored-workflows-view",
+          "name": "Stored Workflows"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "node-params-view",
+        "contents": "This view will display n8n node params in the active editor, if any."
+      },
+      {
+        "view": "stored-workflows-view",
+        "contents": "This view will display n8n workflows stored at ~/.n8n/database.sqlite, if any."
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.68.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "@vscode/test-electron": "^2.1.5",
+    "esbuild": "^0.14.54",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.4",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "json5": "^2.2.3",
+    "node-fetch": "^3.3.1",
+    "ts-morph": "^17.0.1",
+    "wait-for-localhost": "^4.0.1"
+  }
+}
