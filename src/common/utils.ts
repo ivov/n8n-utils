@@ -1,3 +1,4 @@
+import JSON5 from "json5";
 import vscode from "vscode";
 import { ERRORS } from "./constants";
 
@@ -26,7 +27,7 @@ export async function getWorkspaceRootPath() {
     WORKSPACE_ROOT_FILE_MARKER
   );
 
-  if (!workspaces || !workspaces.length) throw new Error(ERRORS.NO_WORKSPACE);
+  if (!workspaces?.length) throw new Error(ERRORS.NO_WORKSPACE);
 
   if (workspaces.length > 1) throw new Error(ERRORS.MULTIPLE_WORKSPACES);
 
@@ -41,3 +42,14 @@ export function readJsonAt(path: string) {
     return null;
   }
 }
+
+export const now = () => Math.floor(Date.now() / 1000); // unix timestamp
+
+export const jsonParse = (jsonString: string) => {
+  try {
+    return JSON5.parse(jsonString);
+  } catch (error) {
+    vscode.window.showErrorMessage(ERRORS.UNPARSEABLE_JSON);
+    return [];
+  }
+};

@@ -46,7 +46,7 @@
       },
       {
         "command": "n8n-utils.navigateToEndpoint",
-        "title": "Navigate to endpoint",
+        "title": "Navigate to controller endpoint",
         "category": "n8n-utils"
       },
       {
@@ -115,7 +115,7 @@
         },
         {
           "id": "n8n-endpoints-view",
-          "name": "n8n endpoints"
+          "name": "Controller endpoints"
         },
         {
           "id": "stored-workflows-view",

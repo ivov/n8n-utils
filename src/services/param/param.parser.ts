@@ -1,4 +1,3 @@
-import JSON5 from "json5";
 import vscode from "vscode";
 import {
   ArrayLiteralExpression,
@@ -10,6 +9,7 @@ import {
 import { isArrayLiteralExpression } from "../../guards";
 import * as tsProject from "../../common/tsProject";
 import type { INodeProperties } from "../../types";
+import { jsonParse } from "../../common/utils";
 
 export function parseParams(): INodeProperties[] {
   const doc = vscode.window.activeTextEditor?.document;
@@ -29,7 +29,7 @@ export function parseParams(): INodeProperties[] {
 
     const toEval = marked.getInitializer()?.getText() ?? "";
 
-    return JSON5.parse(toEval);
+    return jsonParse(toEval);
   }
 
   if (doc.fileName.endsWith("Description.ts")) {
@@ -44,7 +44,7 @@ export function parseParams(): INodeProperties[] {
       .join(" <> ")
       .replace("] <> [", " "); // hack: chain into single array
 
-    return JSON5.parse(toEval);
+    return jsonParse(toEval);
   }
 
   return [];

@@ -117,3 +117,12 @@ export type EndpointLocation = [
     lineNumber: number;
   }
 ];
+
+export namespace NodeStats {
+  export type ResponsesCache = {
+    [nodeTypeName: string]: {
+      output: string; // markdown stats summary
+      expiresAt: number; // Unix timestamp
+    };
+  };
+}

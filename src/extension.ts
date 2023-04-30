@@ -12,8 +12,6 @@ import * as definerService from "./services/definer/definer.service";
 import * as statsService from "./services/stats/stats.service";
 
 export async function activate(context: vscode.ExtensionContext) {
-  context.subscriptions.push(navigate);
-
   try {
     await context.workspaceState.update(
       WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH,
@@ -24,13 +22,15 @@ export async function activate(context: vscode.ExtensionContext) {
     return;
   }
 
+  context.subscriptions.push(navigate);
+
   workflowService.init(context);
   paramService.init(context);
   controllerService.init(context);
   launcherService.init(context);
   envService.init();
   definerService.init(context);
-  statsService.init();
+  statsService.init(context);
 }
 
 export function deactivate() {
