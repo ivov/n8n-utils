@@ -1,5 +1,6 @@
 import vscode from "vscode";
 import { WORKSPACE_STORAGE_KEYS } from "../../common/constants";
+import { isCommunityNodeRepo } from "../../common/utils";
 import {
   ControllersTreeProvider,
   EndpointNavItem,
@@ -63,6 +64,8 @@ export async function getControllerFilepaths(context: vscode.ExtensionContext) {
   );
 
   if (!rootPath) throw new Error("No workspace root path found");
+
+  if (isCommunityNodeRepo(rootPath)) return [];
 
   const found = await vscode.workspace.findFiles(
     new vscode.RelativePattern(rootPath, "packages/cli/src/**/*.controller*.ts")

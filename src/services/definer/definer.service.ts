@@ -6,6 +6,7 @@ import {
 } from "../../common/constants";
 import { NodeTypeDefinitionProvider } from "./definer.provider";
 import * as utils from "../../common/utils";
+import { isCommunityNodeRepo } from "../../common/utils";
 
 export async function init(context: vscode.ExtensionContext) {
   await cacheNodeClassLocations(context);
@@ -26,6 +27,8 @@ async function cacheNodeClassLocations(context: vscode.ExtensionContext) {
   );
 
   if (!rootPath) throw new Error("No workspace root path found");
+
+  if (isCommunityNodeRepo(rootPath)) return;
 
   const locationsUri = vscode.Uri.parse(
     "file://" + path.join(rootPath, NODE_CLASS_LOCATIONS_PATH),

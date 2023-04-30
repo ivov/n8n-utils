@@ -3,6 +3,7 @@ import vscode from "vscode";
 import { parseNodeClass } from "./definer.parser";
 import { WORKSPACE_STORAGE_KEYS } from "../../common/constants";
 import type { NodeClassLocations } from "../../types";
+import { isCommunityNodeRepo } from "../../common/utils";
 
 export class NodeTypeDefinitionProvider implements vscode.DefinitionProvider {
   constructor(public context: vscode.ExtensionContext) {}
@@ -39,6 +40,8 @@ export class NodeTypeDefinitionProvider implements vscode.DefinitionProvider {
     );
 
     if (!rootPath) throw new Error("No workspace root path found");
+
+    if (isCommunityNodeRepo(rootPath)) return;
 
     const nodeTypeUri = vscode.Uri.parse(
       "file://" + path.join(rootPath, location),

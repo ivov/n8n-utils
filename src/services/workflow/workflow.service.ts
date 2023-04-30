@@ -11,6 +11,7 @@ import {
 import { WorkflowsTreeProvider } from "./workflow.provider";
 import { parseWorkflowRanges } from "./workflow.parser";
 import type { Workflow } from "../../types";
+import { isCommunityNodeRepo } from "../../common/utils";
 
 let extensionContext: vscode.ExtensionContext | undefined;
 
@@ -61,6 +62,8 @@ async function getWorkflows(
   );
 
   if (!rootPath) throw new Error("No workspace root path found");
+
+  if (isCommunityNodeRepo(rootPath)) return [];
 
   const exportPath = path.join(rootPath, EXPORT_FILENAME);
 

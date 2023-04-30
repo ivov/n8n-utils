@@ -21,18 +21,22 @@ export function intersect<T>(a: T[], b: T[]): T[] {
 }
 
 export async function getWorkspaceRootPath() {
-  const WORKSPACE_ROOT_FILE_MARKER = "pnpm-workspace.yaml";
+  const MAIN_REPO_MARKER = "pnpm-workspace.yaml";
+  const COMMUNITY_NODE_REPO_MARKER = ".eslintrc.prepublish.js";
 
-  const workspaces = await vscode.workspace.findFiles(
-    WORKSPACE_ROOT_FILE_MARKER
-  );
+  const rootFileGlob = `{${MAIN_REPO_MARKER},${COMMUNITY_NODE_REPO_MARKER}}`;
+
+  const workspaces = await vscode.workspace.findFiles(rootFileGlob);
 
   if (!workspaces?.length) throw new Error(ERRORS.NO_WORKSPACE);
 
   if (workspaces.length > 1) throw new Error(ERRORS.MULTIPLE_WORKSPACES);
 
-  return workspaces[0].fsPath.replace(WORKSPACE_ROOT_FILE_MARKER, "");
+  return workspaces[0].fsPath.replace(MAIN_REPO_MARKER, "");
 }
+
+export const isCommunityNodeRepo = (rootPath: string) =>
+  rootPath.endsWith(".eslintrc.prepublish.js");
 
 export function readJsonAt(path: string) {
   try {
