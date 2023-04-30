@@ -94,6 +94,16 @@
       ]
     },
     "menus": {
+      "commandPalette": [
+        {
+          "command": "n8n-utils.launch",
+          "when": "n8n-utils:isMainRepo"
+        },
+        {
+          "command": "n8n-utils.navigateToParam",
+          "when": "n8n-utils:isMainRepo"
+        }
+      ],
       "view/title": [
         {
           "command": "n8n-utils.refreshControllers",
@@ -111,7 +121,8 @@
       "n8n-utils-container": [
         {
           "id": "node-params-view",
-          "name": "Node params"
+          "name": "Node params",
+          "when": "n8n-utils:isMainRepo"
         },
         {
           "id": "n8n-endpoints-view",
@@ -119,7 +130,8 @@
         },
         {
           "id": "stored-workflows-view",
-          "name": "Stored Workflows"
+          "name": "Stored Workflows",
+          "when": "n8n-utils:isMainRepo"
         }
       ]
     },

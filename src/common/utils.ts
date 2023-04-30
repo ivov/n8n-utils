@@ -1,6 +1,8 @@
 import JSON5 from "json5";
+import path from "node:path";
 import vscode from "vscode";
 import { ERRORS } from "./constants";
+import type { RootLocation } from "../types";
 
 export function intersect<T>(a: T[], b: T[]): T[] {
   const map = new Map<T, boolean>();
@@ -20,23 +22,20 @@ export function intersect<T>(a: T[], b: T[]): T[] {
   return result;
 }
 
-export async function getWorkspaceRootPath() {
-  const MAIN_REPO_MARKER = "pnpm-workspace.yaml";
-  const COMMUNITY_NODE_REPO_MARKER = ".eslintrc.prepublish.js";
+export const now = () => Math.floor(Date.now() / 1000); // unix timestamp
 
-  const rootFileGlob = `{${MAIN_REPO_MARKER},${COMMUNITY_NODE_REPO_MARKER}}`;
+// ----------------------------------
+//              json
+// ----------------------------------
 
-  const workspaces = await vscode.workspace.findFiles(rootFileGlob);
-
-  if (!workspaces?.length) throw new Error(ERRORS.NO_WORKSPACE);
-
-  if (workspaces.length > 1) throw new Error(ERRORS.MULTIPLE_WORKSPACES);
-
-  return workspaces[0].fsPath.replace(MAIN_REPO_MARKER, "");
-}
-
-export const isCommunityNodeRepo = (rootPath: string) =>
-  rootPath.endsWith(".eslintrc.prepublish.js");
+export const jsonParse = (jsonString: string) => {
+  try {
+    return JSON5.parse(jsonString);
+  } catch (error) {
+    vscode.window.showErrorMessage(ERRORS.UNPARSEABLE_JSON);
+    return [];
+  }
+};
 
 export function readJsonAt(path: string) {
   try {
@@ -47,13 +46,38 @@ export function readJsonAt(path: string) {
   }
 }
 
-export const now = () => Math.floor(Date.now() / 1000); // unix timestamp
+// ----------------------------------
+//          root location
+// ----------------------------------
 
-export const jsonParse = (jsonString: string) => {
-  try {
-    return JSON5.parse(jsonString);
-  } catch (error) {
-    vscode.window.showErrorMessage(ERRORS.UNPARSEABLE_JSON);
-    return [];
-  }
+export const REPO_MARKERS: Record<string, string> = {
+  "pnpm-workspace.yaml": "main-repo",
+  "LOCAL-SETUP.md": "n8n-hosted-backend",
+  ".eslintrc.prepublish.js": "community-node",
 };
+
+export async function getWorkspaceRootLocation(): Promise<RootLocation> {
+  for (const marker of Object.keys(REPO_MARKERS)) {
+    const uris = await vscode.workspace.findFiles(marker);
+
+    if (!uris?.length || uris.length > 1) continue;
+
+    const { fsPath } = uris[0];
+
+    return {
+      path: path.dirname(fsPath),
+      type: REPO_MARKERS[path.basename(fsPath)],
+    };
+  }
+
+  throw new Error("Failed to find a workspace root path");
+}
+
+export const isMainRepo = (rootPath: RootLocation) =>
+  rootPath.type === "main-repo";
+
+export const isCommunityNodeRepo = (rootPath: RootLocation) =>
+  rootPath.type === "community-node";
+
+export const isHostedBackendRepo = (rootPath: RootLocation) =>
+  rootPath.type === "n8n-hosted-backend";

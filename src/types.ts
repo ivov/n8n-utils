@@ -1,3 +1,5 @@
+import { REPO_MARKERS } from "./common/utils";
+
 // ----------------------------------
 //           node params
 // ----------------------------------
@@ -126,3 +128,8 @@ export namespace NodeStats {
     };
   };
 }
+
+export type RootLocation = {
+  path: string;
+  type: keyof typeof REPO_MARKERS;
+};

@@ -1,6 +1,7 @@
 import vscode from "vscode";
 import { WORKSPACE_STORAGE_KEYS } from "../../common/constants";
-import { isCommunityNodeRepo } from "../../common/utils";
+import { isHostedBackendRepo } from "../../common/utils";
+import { RootLocation } from "../../types";
 import {
   ControllersTreeProvider,
   EndpointNavItem,
@@ -59,17 +60,21 @@ export async function init(context: vscode.ExtensionContext) {
 }
 
 export async function getControllerFilepaths(context: vscode.ExtensionContext) {
-  const rootPath = context.workspaceState.get<string>(
-    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH
+  const rootLoc = context.workspaceState.get<RootLocation>(
+    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_LOCATION
   );
 
-  if (!rootPath) throw new Error("No workspace root path found");
+  if (!rootLoc) throw new Error("No workspace root path found");
 
-  if (isCommunityNodeRepo(rootPath)) return [];
+  const glob = isHostedBackendRepo(rootLoc)
+    ? "packages/dashboard-backend/src/**/*.controller*.ts"
+    : "packages/cli/src/**/*.controller*.ts";
 
   const found = await vscode.workspace.findFiles(
-    new vscode.RelativePattern(rootPath, "packages/cli/src/**/*.controller*.ts")
+    new vscode.RelativePattern(rootLoc.path, glob)
   );
 
-  return found.map((file) => file.path);
+  const filtered = found.filter((file) => !file.path.includes(".spec.ts")); // glob negation not working
+
+  return filtered.map((file) => file.path);
 }

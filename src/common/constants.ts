@@ -59,7 +59,7 @@ export const SCHEMA_RELATIVE_PATH = "./packages/cli/src/config/schema.ts";
 export const MANUAL_TRIGGER_NODE_TYPE_NAME = 'When clicking "Execute Workflow"';
 
 export const WORKSPACE_STORAGE_KEYS = {
-  WORKSPACE_ROOT_PATH: "workspace-root-path",
+  WORKSPACE_ROOT_LOCATION: "workspace-root-location",
   NODE_CLASS_LOCATIONS: "node-class-locations", // packages/nodes-base/dist/known/nodes.json
   ENV_VAR_NAMES_AND_DEFAULTS: "env-var-names-and-defaults",
   NODE_STATS_RESPONSES: "node-stats-responses",

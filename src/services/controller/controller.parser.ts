@@ -9,11 +9,15 @@ export function parseControllers(paths: string[]) {
   for (const path of paths) {
     tsProject.addSourceFile(path);
 
-    const controllerName = findControllerName(path);
+    let controllerName = findControllerName(path);
 
     if (!controllerName) continue;
 
-    if (controllerName.endsWith("saml.controller.ee.ts")) continue;
+    if (controllerName.endsWith("saml.controller.ee.ts")) continue; // uses enums, skip for now
+
+    if (!controllerName.startsWith("/")) {
+      controllerName = "/" + controllerName;
+    }
 
     controllerSummaries.push({
       name: controllerName,
@@ -30,8 +34,8 @@ function findControllerName(filePath: string) {
     .getDescendantsOfKind(SyntaxKind.Decorator)) {
     const text = child.getText();
 
-    if (isRestController(text)) {
-      let name = text.replace(/(^@RestController\('?)|('?\)$)/g, "");
+    if (isMainRepoController(text) || isHostedBackendController(text)) {
+      let name = text.replace(/(^@(Rest)?Controller\('?)|('?\)$)/g, "");
 
       if (name === "" || name === "/") {
         name =
@@ -54,9 +58,20 @@ function findControllerMethods(filePath: string) {
     const text = child.getText();
 
     if (isMethodDecorator(text)) {
-      const [methodName, endpoint] = text
-        .replace(/@(.*)\('(.*)'(.*)\)/, "$1 $2")
+      // eslint-disable-next-line prefer-const
+      let [methodName, endpoint] = text
+        .replace(/@(.*)\('?([^']*)'?(.*)\)/, "$1 $2")
         .split(" ");
+
+      // n8n-hosted-backend allows empty decorator arg
+      if (!endpoint) {
+        endpoint = "/";
+      }
+
+      // n8n-hosted-backend does not enforce starting slash
+      if (endpoint && !endpoint.startsWith("/")) {
+        endpoint = "/" + endpoint;
+      }
 
       const method: ControllerSummaryMethod = {
         name: methodName.toUpperCase(),
@@ -86,5 +101,10 @@ function findControllerMethods(filePath: string) {
   return methods;
 }
 
-const isRestController = (str: string) => str.startsWith("@RestController");
-const isMethodDecorator = (str: string) => /@Get|@Post|@Put|@Patch/.test(str);
+const isMainRepoController = (str: string) => str.startsWith("@RestController");
+
+const isHostedBackendController = (str: string) =>
+  str.startsWith("@Controller");
+
+const isMethodDecorator = (str: string) =>
+  /@(Get|Put|Post|Patch|Delete|Options|Head)\(.*\)/.test(str);
