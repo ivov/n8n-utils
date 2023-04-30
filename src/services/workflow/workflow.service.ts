@@ -10,7 +10,7 @@ import {
 } from "../../common/constants";
 import { WorkflowsTreeProvider } from "./workflow.provider";
 import { parseWorkflowRanges } from "./workflow.parser";
-import type { Workflow } from "../../types";
+import type { RootLocation, Workflow } from "../../types";
 
 let extensionContext: vscode.ExtensionContext | undefined;
 
@@ -56,13 +56,13 @@ async function getWorkflows(
 
   exporter.sendText(CLI_COMMANDS.EXPORT);
 
-  const rootPath = context.workspaceState.get<string>(
-    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH
+  const rootLoc = context.workspaceState.get<RootLocation>(
+    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_LOCATION
   );
 
-  if (!rootPath) throw new Error("No workspace root path found");
+  if (!rootLoc) throw new Error("No workspace root path found");
 
-  const exportPath = path.join(rootPath, EXPORT_FILENAME);
+  const exportPath = path.join(rootLoc.path, EXPORT_FILENAME);
 
   const exists = await pollExists(exportPath);
 
@@ -112,14 +112,14 @@ const openWorkflowCallback = async (workflowId: string) => {
 
   if (!workflow) return;
 
-  const rootPath = extensionContext?.workspaceState.get<string>(
-    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH
+  const rootLoc = extensionContext?.workspaceState.get<RootLocation>(
+    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_LOCATION
   );
 
-  if (!rootPath) return;
+  if (!rootLoc) return;
 
   const uri = vscode.Uri.parse(
-    path.join(rootPath, ".vscode", workflow.id + ".workflow.json")
+    path.join(rootLoc.path, ".vscode", workflow.id + ".workflow.json")
   );
 
   await vscode.workspace.fs.writeFile(

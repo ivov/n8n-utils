@@ -16,13 +16,13 @@ View the tree of node params in a node or resource file on the extension's `Node
 
 <img src="https://raw.githubusercontent.com/ivov/n8n-utils/master/media/param-nav.png">
 
-### n8n endpoint navigator
+### Controller endpoint navigator
 
-View the list of controller endpoints in the `cli` package on the extension's `n8n controllers` tab. Navigate quickly to a controller or endpoint. Accessible via the Command Palette: `n8n-utils: Navigate to endpoint`.
+View the list of controller endpoints in the `cli` package on the extension's `n8n controllers` tab. Navigate quickly to a controller or endpoint. Accessible via the Command Palette: `n8n-utils: Navigate to controller endpoint`.
 
-<img src="https://raw.githubusercontent.com/ivov/n8n-utils/master/media/endpoint-nav.png">
+<img src="https://raw.githubusercontent.com/ivov/n8n-utils/master/media/controller-endpoints.png">
 
-### Environment variables tooltips
+### Env vars tooltips
 
 Hover over references to env vars like `config.getEnv('MY_VAR')` and `process.env.MY_VAR` references to view their current values, with annotations specifying if they have been overridden, if they are part of the schema, and if they remain with the schema default value.
 
@@ -46,17 +46,17 @@ Hover over any node class with a comment icon to view a summary of the node's st
 - **Node param navigator** supports `*.node.ts` and `*Description.ts` files.
 - **n8n endpoint navigator** supports `*.controller.ts` files.
 - **Env vars tooltips** may only access env vars provided via the VSCode terminal.
-- **Node stats** are only available for the n8n team and require adding `"n8n-utils.nodeStats.token": "<token>"` to `.vscode/settings.json`. Find the token in the internal vault under `VSCode extension`.
+- **Node stats** are only available for the n8n team and require adding `"n8n-utils.nodeStats.token": "<token>"` to `.vscode/settings.json`. Find the token in the internal vault under `VSCode extension`. Node stats are cached for seven days.
 
 ## Development
 
 To develop this extension:
 
-1. Run `npm run watch`
-2. Launch debugger with `F5`
-3. Make a change
-4. Restart debugger with `cmd+shift+F5`
-5. View logs in `Debug Console`
+1. At root dir, run `npm run watch`
+2. Press `F5` to launch debugger at new window with Extension Development Host (EDH)
+3. Make a change at root dir
+4. Press `cmd+shift+F5` to restart debugger at new window with EDH
+5. View logs in `Debug Console` at root dir window
 
 ## Publishing
 
@@ -64,8 +64,7 @@ To publish a new version of this extension:
 
 1. Install `vsce`: `npm install -g vsce`
 2. Package the extension: `vsce package`
-3. Obtain a [personal access token](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token).
-4. Publish [with version](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#autoincrementing-the-extension-version): `vsce publish <version>`
+3. Publish: `vsce publish <major|minor|patch>`
 
 ## Author
 

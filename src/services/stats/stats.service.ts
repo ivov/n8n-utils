@@ -4,14 +4,18 @@ import { parseNodeClassName } from "./stats.parser";
 
 const nodeStatsToken = vscode.workspace
   .getConfiguration("n8n-utils")
-  .get<number>("nodeStats.token");
+  .get<string>("nodeStats.token");
 
-export async function init() {
+export let extensionContext: vscode.ExtensionContext | undefined;
+
+export async function init(context: vscode.ExtensionContext) {
   if (!nodeStatsToken) return;
 
   const doc = vscode.window.activeTextEditor?.document;
 
   if (!doc) return;
+
+  extensionContext = context;
 
   await setNodeTypeNameDecoration(doc);
 
@@ -25,6 +29,8 @@ export async function init() {
 }
 
 async function setNodeTypeNameDecoration(doc: vscode.TextDocument) {
+  if (!doc.fileName.endsWith(".node.ts")) return;
+
   const options = await parseNodeClassName(doc);
 
   if (!options) return;

@@ -6,6 +6,7 @@ import {
 } from "../../common/constants";
 import { NodeTypeDefinitionProvider } from "./definer.provider";
 import * as utils from "../../common/utils";
+import { RootLocation } from "../../types";
 
 export async function init(context: vscode.ExtensionContext) {
   await cacheNodeClassLocations(context);
@@ -21,14 +22,14 @@ export async function init(context: vscode.ExtensionContext) {
 }
 
 async function cacheNodeClassLocations(context: vscode.ExtensionContext) {
-  const rootPath = context.workspaceState.get<string>(
-    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH
+  const rootLoc = context.workspaceState.get<RootLocation>(
+    WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_LOCATION
   );
 
-  if (!rootPath) throw new Error("No workspace root path found");
+  if (!rootLoc) throw new Error("No workspace root path found");
 
   const locationsUri = vscode.Uri.parse(
-    "file://" + path.join(rootPath, NODE_CLASS_LOCATIONS_PATH),
+    "file://" + path.join(rootLoc.path, NODE_CLASS_LOCATIONS_PATH),
     true
   );
 

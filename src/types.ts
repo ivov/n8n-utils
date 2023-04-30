@@ -1,3 +1,5 @@
+import { REPO_MARKERS } from "./common/utils";
+
 // ----------------------------------
 //           node params
 // ----------------------------------
@@ -117,3 +119,17 @@ export type EndpointLocation = [
     lineNumber: number;
   }
 ];
+
+export namespace NodeStats {
+  export type ResponsesCache = {
+    [nodeTypeName: string]: {
+      output: string; // markdown stats summary
+      expiresAt: number; // Unix timestamp
+    };
+  };
+}
+
+export type RootLocation = {
+  path: string;
+  type: keyof typeof REPO_MARKERS;
+};

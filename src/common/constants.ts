@@ -22,6 +22,8 @@ export const ERRORS = {
     "Failed to find schema.ts. Please check your n8n directory for errors",
   UNPARSEABLE_SCHEMA:
     "Failed to parse schema.ts. Please check your schema.ts file for errors",
+  UNPARSEABLE_JSON:
+    "Failed to analyze this file. Please open an issue: https://github.com/ivov/n8n-utils/issues",
 };
 
 export const WEBVIEW = {
@@ -57,9 +59,10 @@ export const SCHEMA_RELATIVE_PATH = "./packages/cli/src/config/schema.ts";
 export const MANUAL_TRIGGER_NODE_TYPE_NAME = 'When clicking "Execute Workflow"';
 
 export const WORKSPACE_STORAGE_KEYS = {
-  WORKSPACE_ROOT_PATH: "workspace-root-path",
-  NODE_CLASS_LOCATIONS: "node-class-locations",
+  WORKSPACE_ROOT_LOCATION: "workspace-root-location",
+  NODE_CLASS_LOCATIONS: "node-class-locations", // packages/nodes-base/dist/known/nodes.json
   ENV_VAR_NAMES_AND_DEFAULTS: "env-var-names-and-defaults",
+  NODE_STATS_RESPONSES: "node-stats-responses",
 };
 
 export const NODE_CLASS_LOCATIONS_PATH = path.join(

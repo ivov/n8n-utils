@@ -2,7 +2,7 @@ import path from "node:path";
 import vscode from "vscode";
 import { parseNodeClass } from "./definer.parser";
 import { WORKSPACE_STORAGE_KEYS } from "../../common/constants";
-import type { NodeClassLocations } from "../../types";
+import type { NodeClassLocations, RootLocation } from "../../types";
 
 export class NodeTypeDefinitionProvider implements vscode.DefinitionProvider {
   constructor(public context: vscode.ExtensionContext) {}
@@ -34,14 +34,14 @@ export class NodeTypeDefinitionProvider implements vscode.DefinitionProvider {
 
     if (!location.endsWith(".node.ts")) return;
 
-    const rootPath = this.context.workspaceState.get<string>(
-      WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_PATH
+    const rootLoc = this.context.workspaceState.get<RootLocation>(
+      WORKSPACE_STORAGE_KEYS.WORKSPACE_ROOT_LOCATION
     );
 
-    if (!rootPath) throw new Error("No workspace root path found");
+    if (!rootLoc) throw new Error("No workspace root path found");
 
     const nodeTypeUri = vscode.Uri.parse(
-      "file://" + path.join(rootPath, location),
+      "file://" + path.join(rootLoc.path, location),
       true
     );
 

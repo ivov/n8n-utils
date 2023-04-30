@@ -12,4 +12,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint/eslint-plugin", "eslint-plugin-prettier"],
   extends: ["plugin:@typescript-eslint/recommended", "eslint-config-prettier"],
+  rules: {
+    "@typescript-eslint/no-namespace": "off",
+  },
 };

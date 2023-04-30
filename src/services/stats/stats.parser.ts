@@ -1,54 +1,50 @@
-import { SyntaxKind } from "ts-morph";
+import { SyntaxKind, ts } from "ts-morph";
 import vscode from "vscode";
-import fetch from "node-fetch";
 import * as tsProject from "../../common/tsProject";
+import { retrieveNodeStats } from "./stats.retriever";
 
 export async function parseNodeClassName(doc: vscode.TextDocument) {
-  const options: vscode.DecorationOptions[] = [];
-
   tsProject.addSourceFile(doc.fileName);
 
-  const found = tsProject
+  const classDeclarations = tsProject
     .getSourceFile(doc.fileName)
     ?.getDescendantsOfKind(SyntaxKind.ClassDeclaration);
 
-  if (!found || found.length !== 1) return null;
+  if (classDeclarations?.length !== 1) return null;
 
-  const [classNode] = found;
+  const [classDeclaration] = classDeclarations;
 
-  const nameNode = classNode.compilerNode.getChildAt(2);
+  const heritageClauses = tsProject
+    .getSourceFile(doc.fileName)
+    ?.getDescendantsOfKind(SyntaxKind.HeritageClause);
 
-  const nameNodeText = nameNode.getText();
+  if (classDeclarations?.length !== 1) return null;
 
-  const nodeTypeName = nameNodeText[0].toLowerCase() + nameNodeText.slice(1);
+  const [heritageClause] = heritageClauses;
 
-  const json = await fetchNodeStats(nodeTypeName);
+  const implementee = heritageClause.compilerNode.getChildAt(1).getText();
 
-  options.push({
-    range: new vscode.Range(
-      doc.positionAt(nameNode.getStart()),
-      doc.positionAt(nameNode.getEnd())
-    ),
+  if (implementee !== "INodeType") return null;
 
-    hoverMessage: json.output,
-  });
+  const nameNode = classDeclaration.compilerNode.getChildAt(2);
 
-  return options;
+  const result = await retrieveNodeStats(toNodeTypeName(nameNode));
+
+  if (!result) return null;
+
+  return [
+    {
+      range: new vscode.Range(
+        doc.positionAt(nameNode.getStart()),
+        doc.positionAt(nameNode.getEnd())
+      ),
+      hoverMessage: result.output,
+    },
+  ];
 }
 
-const nodeStatsToken = vscode.workspace
-  .getConfiguration("n8n-utils")
-  .get<number>("nodeStats.token");
+function toNodeTypeName(nameNode: ts.Node) {
+  const nameNodeText = nameNode.getText();
 
-async function fetchNodeStats(nodeTypeName: string) {
-  const res = await fetch(
-    `https://internal.users.n8n.cloud/webhook/node-stats?node_id=n8n-nodes-base.${nodeTypeName}`,
-    {
-      method: "POST",
-      body: JSON.stringify({ token: nodeStatsToken }),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-
-  return (await res.json()) as { output: string };
+  return nameNodeText[0].toLowerCase() + nameNodeText.slice(1);
 }

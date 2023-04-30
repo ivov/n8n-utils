@@ -2,18 +2,19 @@ import path from "path";
 import vscode from "vscode";
 import * as utils from "../../common/utils";
 import { SCHEMA_RELATIVE_PATH } from "../../common/constants";
+import { RootLocation } from "../../types";
 
 export async function getSchemaPath() {
-  let rootPath: string | undefined;
+  let rootPath: RootLocation;
 
   try {
-    rootPath = await utils.getWorkspaceRootPath();
+    rootPath = await utils.getWorkspaceRootLocation();
   } catch (error) {
     error instanceof Error && vscode.window.showErrorMessage(error.message);
     return null;
   }
 
-  return path.join(rootPath, SCHEMA_RELATIVE_PATH);
+  return path.join(rootPath.path, SCHEMA_RELATIVE_PATH);
 }
 
 export function toParseable(schema: string) {
