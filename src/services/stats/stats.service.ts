@@ -25,6 +25,8 @@ export async function init() {
 }
 
 async function setNodeTypeNameDecoration(doc: vscode.TextDocument) {
+  if (!doc.fileName.endsWith(".node.ts")) return;
+
   const options = await parseNodeClassName(doc);
 
   if (!options) return;

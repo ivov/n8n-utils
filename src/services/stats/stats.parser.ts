@@ -8,15 +8,27 @@ export async function parseNodeClassName(doc: vscode.TextDocument) {
 
   tsProject.addSourceFile(doc.fileName);
 
-  const found = tsProject
+  const classDeclarations = tsProject
     .getSourceFile(doc.fileName)
     ?.getDescendantsOfKind(SyntaxKind.ClassDeclaration);
 
-  if (!found || found.length !== 1) return null;
+  if (classDeclarations?.length !== 1) return null;
 
-  const [classNode] = found;
+  const [classDeclaration] = classDeclarations;
 
-  const nameNode = classNode.compilerNode.getChildAt(2);
+  const heritageClauses = tsProject
+    .getSourceFile(doc.fileName)
+    ?.getDescendantsOfKind(SyntaxKind.HeritageClause);
+
+  if (classDeclarations?.length !== 1) return null;
+
+  const [heritageClause] = heritageClauses;
+
+  const implementee = heritageClause.compilerNode.getChildAt(1).getText();
+
+  if (implementee !== "INodeType") return null;
+
+  const nameNode = classDeclaration.compilerNode.getChildAt(2);
 
   const nameNodeText = nameNode.getText();
 
