@@ -58,13 +58,14 @@ To develop this extension:
 4. Press `cmd+shift+F5` to restart debugger at new window with EDH
 5. View logs in `Debug Console` at root dir window
 
-## Publishing
+## Publishing and releasing
 
-To publish a new version of this extension:
+> **Note**: Install `npm install -g vsce`
 
-1. Install `vsce`: `npm install -g vsce`
-2. Package the extension: `vsce package`
-3. Publish: `vsce publish <major|minor|patch>`
+1. Update version in `package.json` and `npm i` to generate new `package-lock.json`
+2. `vsce package` to package extension
+3. Publish with `vsce publish <major|minor|patch>`
+4. Commit with `Release v1.2.3` and release on GitHub
 
 ## Author
 
