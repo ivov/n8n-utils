@@ -15,7 +15,11 @@ export function parseControllers(paths: string[]) {
 
     if (controllerName.endsWith("saml.controller.ee.ts")) continue; // uses enums, skip for now
 
-    if (!controllerName.startsWith("/")) {
+    if (
+      !controllerName.startsWith("/") &&
+      !controllerName.startsWith("group:")
+    ) {
+      // n8n-hosted-backend does not use leading slash so prepend it
       controllerName = "/" + controllerName;
     }
 
