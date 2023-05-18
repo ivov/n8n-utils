@@ -23,6 +23,7 @@ export function toParseable(schema: string) {
       .replace(/as const/g, "")
       .replace(/format: (String|Boolean|Number),/g, "format: '$1',")
       .replace(/default: undefined,/g, "default: 'undefined',") // no undefined in JSON
+      .replace(/IS_V1_RELEASE \? '\w+' :/g, "") // remove v1 options, @TODO update after v1 release
       .replace(
         /default: 60 \* 60 \* 72, \/\/ 72 hours/g,
         `default: ${60 * 60 * 72},`
