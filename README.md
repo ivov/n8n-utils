@@ -58,11 +58,11 @@ To develop this extension:
 4. Press `cmd+shift+F5` to restart debugger at new window with EDH
 5. View logs in `Debug Console` at root dir window
 
-## Publishing and releasing
+## Publish and release
 
 > **Note**: Install `npm install -g vsce`
 
-1. `vsce package` to package extension
+1. `vsce package` to package extension. This will create an untracked `.vsix` file, used in the next step.
 2. Publish with `vsce publish <major|minor|patch>`. This will commit with a message like `1.2.3`, update the versions in `package.json` and `package-lock.json`, and create a new tag like `v1.2.3`.
 3. Push and [release on GitHub](https://github.com/ivov/n8n-utils/releases/new).
 
