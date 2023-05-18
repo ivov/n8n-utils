@@ -62,10 +62,9 @@ To develop this extension:
 
 > **Note**: Install `npm install -g vsce`
 
-1. Update version in `package.json` and `npm i` to generate new `package-lock.json`
-2. `vsce package` to package extension
-3. Publish with `vsce publish <major|minor|patch>`
-4. Commit with `Release v1.2.3` and release on GitHub
+1. `vsce package` to package extension
+2. Publish with `vsce publish <major|minor|patch>`. This will commit with a message like `1.2.3`, update the versions in `package.json` and `package-lock.json`, and create a new tag like `v1.2.3`.
+3. Push and [release on GitHub](https://github.com/ivov/n8n-utils/releases/new).
 
 ## Author
 
